@@ -267,6 +267,8 @@ mod parking;
 mod sys;
 pub mod task;
 
+pub mod nop;
+
 // unwraps a Result to Poll<T>: if error returns right away.
 //
 // usage is similar to future_lite::ready!

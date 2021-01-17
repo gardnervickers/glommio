@@ -86,7 +86,7 @@ impl fmt::Debug for UringBufferAllocator {
 }
 
 impl UringBufferAllocator {
-    fn new(size: usize) -> Self {
+    pub(crate) fn new(size: usize) -> Self {
         let layout = Layout::from_size_align(size, 4096).unwrap();
         let (data, allocator) = unsafe {
             let data = alloc::alloc::alloc(layout) as *mut u8;
@@ -108,7 +108,7 @@ impl UringBufferAllocator {
         }
     }
 
-    fn activate_registered_buffers(&self, idx: usize) {
+    pub(crate) fn activate_registered_buffers(&self, idx: usize) {
         self.uring_buffer_id.set(Some(idx))
     }
 
@@ -117,7 +117,7 @@ impl UringBufferAllocator {
         allocator.free(ptr.as_ptr() as *mut u8);
     }
 
-    fn as_bytes(&self) -> &[u8] {
+    pub(crate) fn as_bytes(&self) -> &[u8] {
         unsafe { std::slice::from_raw_parts(self.data.as_ptr(), self.size) }
     }
 

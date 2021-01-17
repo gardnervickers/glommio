@@ -17,6 +17,9 @@ use std::task::Waker;
 use std::time::Duration;
 use std::{fmt, io};
 
+pub(crate) mod op;
+pub(crate) mod reactor;
+
 macro_rules! syscall {
     ($fn:ident $args:tt) => {{
         let res = unsafe { libc::$fn $args };
@@ -197,7 +200,7 @@ pub(crate) mod sysfs;
 mod uring;
 
 pub use self::dma_buffer::DmaBuffer;
-pub(crate) use self::uring::*;
+use self::uring::{ReactorQueue, SourceId};
 use crate::IoRequirements;
 
 #[derive(Debug)]
@@ -272,7 +275,7 @@ impl TryFrom<SourceType> for libc::statx {
 }
 
 pub(crate) struct TimeSpec64 {
-    raw: uring_sys::__kernel_timespec,
+    pub(crate) raw: uring_sys::__kernel_timespec,
 }
 
 impl Default for TimeSpec64 {
